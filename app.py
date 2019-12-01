@@ -1,13 +1,14 @@
-#!/usr/bin/env python
+#!./venv/bin/python
 # ------------------------------------------------------------------------------
 #  Copyright (c) 2019. Anas Abu Farraj
 # ------------------------------------------------------------------------------
-""" Learning Flask-RESTful extension"""
+""" Learning Flask-RESTful extension."""
 
 from flask import Flask, request
 from flask_restful import Resource, Api
 
 APP = Flask(__name__)
+APP.secret_key = 'secret_password'
 API = Api(APP)
 
 ITEMS = [{'name': 'book', 'price': 17.99}]
@@ -27,7 +28,7 @@ class Item(Resource):
         Iterate in lazy way over a filter object with next, return an item if found,
         or return None by default.
         :param name: string
-        :returns: {"item": <name>} or {"item": null}, 200 if True, else 404.
+        :returns: {"item": <name>} or {"item": null}, 200 if True, otherwise 404.
         """
         item = next(filter(lambda x: x['name'] == name, ITEMS), None)
         return {'item': item}, 200 if item else 404
@@ -51,6 +52,3 @@ class Item(Resource):
 
 API.add_resource(ItemList, '/item')
 API.add_resource(Item, '/item/<string:name>')
-
-if __name__ == '__main__':
-    APP.run()
