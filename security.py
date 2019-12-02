@@ -1,6 +1,9 @@
+#!./venv/bin/python
 # ------------------------------------------------------------------------------
 #  Copyright (c) 2019. Anas Abu Farraj
 # ------------------------------------------------------------------------------
+"""User authentication module."""
+
 from user import User
 
 # USERS = [{
@@ -39,16 +42,16 @@ from user import User
 #     }
 # }
 
-USERS = [User(1, 'john', '123'), User(2, 'sarah', '456')]
+USERS = [User(1, 'john', '1357'), User(2, 'sarah', '2468')]
 USERID_MAPPING = {u.id: u for u in USERS}
 USERNAME_MAPPING = {u.username: u for u in USERS}
 
 
 def authenticate(username, password):
     """Returns user object if exists, otherwise return None.
-    :param username: string
-    :param password: string
-    :return: dictionary {'id': <id>, 'username': <username>, 'password': <password>}
+    :param username: string.
+    :param password: string.
+    :return: dictionary {'id': <id>, 'username': <username>, 'password': <password>}.
     """
     user = USERNAME_MAPPING.get(username, None)
     if user and user.password == password:
@@ -57,8 +60,8 @@ def authenticate(username, password):
 
 def identity(payload):
     """Returns user id if exists, otherwise returns None.
-    :param payload: dictionary
-    :return: user id
+    :param payload: dictionary.
+    :return: user id.
     """
     user_id = payload['identity']
     return USERID_MAPPING.get(user_id, None)

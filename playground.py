@@ -1,21 +1,11 @@
-#!/usr/bin/env python
+#!./venv/bin/python
 # ------------------------------------------------------------------------------
 #  Copyright (c) 2019. Anas Abu Farraj
 # ------------------------------------------------------------------------------
 
-USERNAME_MAPPING = {
-    'john': {
-        'id': 1,
-        'username': 'john',
-        'password': '123'
-    },
-    'sarah': {
-        'id': 2,
-        'username': 'sarah',
-        'password': '456'
-    }
-}
+item_a = {'name': 'book', 'price': 17.99}
+item_b = {'name': 'piano', 'price': 524.00}
 
-user = USERNAME_MAPPING.get('johns', None)
+item_a.update(item_b)
 
-print(user)
+print(item_a)  # {'name': 'piano', 'price': 524.0}
