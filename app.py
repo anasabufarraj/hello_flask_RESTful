@@ -1,12 +1,12 @@
 #!./venv/bin/python
 # ------------------------------------------------------------------------------
-#  Copyright (c) 2019. Anas Abu Farraj
+#  Copyright (c) 2019. Anas Abu Farraj.
 # ------------------------------------------------------------------------------
 """Learning Flask-RESTful extension."""
 
-from flask import Flask, request
-from flask_restful import Resource, Api
+from flask import Flask
 from flask_jwt import JWT, jwt_required
+from flask_restful import Resource, Api, reqparse
 
 from security import authenticate, identity
 
@@ -26,6 +26,12 @@ class ItemList(Resource):
 
 
 class Item(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('price',
+                        type=float,
+                        required=True,
+                        help='This field cannot be blank!')
+
     @jwt_required()
     def get(self, name):
         """Returns item by name if found.
@@ -39,21 +45,24 @@ class Item(Resource):
 
     @jwt_required()
     def post(self, name):
-        """Create and append new item, returns a message if exist and 400 (BAD REQUEST).
+        """Creates and append new item, returns a message if exist and 400 (BAD REQUEST).
         :param name: string.
         :returns: item and 201 (CREATED).
         """
+
         item = next(filter(lambda x: x['name'] == name, ITEMS), None)
         if item:
             return {'message': f'item with name {name} already exists!'}, 400
-        request_data = request.get_json()  # Data posts in the request body
+
+        request_data = Item.parser.parse_args()
         item = {'name': name, 'price': request_data['price']}
         ITEMS.append(item)
+
         return item, 201
 
     @jwt_required()
     def delete(self, name):
-        """Delete item if exist and return message, otherwise returns message and 400 (BAD REQUEST).
+        """Deletes item if exist and return message, otherwise returns message and 400 (BAD REQUEST).
         Deletion happens by overwriting existing items database, and returns new
         constructed database excluding named item.
         :param name: string.
@@ -73,7 +82,7 @@ class Item(Resource):
         :param name: string.
         :return: item as dictionary
         """
-        request_data = request.get_json()
+        request_data = Item.parser.parse_args()
         item = next(filter(lambda x: x['name'] == name, ITEMS), None)
         if item:
             item.update(request_data)
